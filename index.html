@@ -1,0 +1,922 @@
+
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f4ee">
+<title>Ôn tập Xoa bóp bấm huyệt</title>
+
+<style>
+:root{
+  --bg:#f7f4ee;
+  --card:#fff;
+  --ink:#25231f;
+  --muted:#77736b;
+  --line:#e7e1d7;
+  --accent:#76543c;
+  --good:#18794e;
+  --bad:#b42318;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+
+.wrap{
+  max-width:760px;
+  margin:auto;
+  padding:22px 16px 48px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.brand{
+  font-weight:800;
+  letter-spacing:.01em;
+}
+
+.pill{
+  font-size:13px;
+  color:var(--muted);
+  background:#eee8df;
+  padding:6px 10px;
+  border-radius:99px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:clamp(18px,4vw,28px);
+  box-shadow:0 8px 28px #47351a0a;
+}
+
+.meta{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:14px;
+  gap:10px;
+}
+
+.bar{
+  height:7px;
+  background:#eee9e1;
+  border-radius:10px;
+  overflow:hidden;
+  margin:12px 0 24px;
+}
+
+.bar>i{
+  display:block;
+  height:100%;
+  width:0;
+  background:var(--accent);
+  transition:width .2s;
+}
+
+.question{
+  font-size:clamp(19px,4vw,24px);
+  line-height:1.35;
+  margin:0 0 20px;
+}
+
+.opts{
+  display:grid;
+  gap:10px;
+}
+
+.opt{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  cursor:pointer;
+  background:white;
+  transition:.15s;
+}
+
+.opt:hover{border-color:#b9a28e}
+
+.opt input{
+  margin:4px 0 0;
+  accent-color:var(--accent);
+  width:18px;
+  height:18px;
+  flex:none;
+}
+
+.opt.selected{
+  border-color:var(--accent);
+  background:#faf6f1;
+}
+
+.opt.correct{
+  border-color:var(--good);
+  background:#effaf4;
+}
+
+.opt.wrong{
+  border-color:var(--bad);
+  background:#fff2f0;
+}
+
+.letter{
+  font-weight:800;
+  color:var(--accent);
+  min-width:20px;
+}
+
+.feedback{
+  margin-top:16px;
+  padding:13px 15px;
+  border-radius:12px;
+  background:#f4f1eb;
+  font-weight:600;
+}
+
+.feedback.good{
+  color:var(--good);
+  background:#effaf4;
+}
+
+.feedback.bad{
+  color:var(--bad);
+  background:#fff2f0;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:22px;
+}
+
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:12px 17px;
+  font:inherit;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.primary{
+  background:var(--accent);
+  color:white;
+  flex:1;
+}
+
+.secondary{
+  background:#eee8df;
+  color:var(--ink);
+}
+
+.btn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+.foot{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-top:16px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.summary{margin-top:18px}
+
+.hidden{display:none!important}
+
+.score{
+  font-size:30px;
+  font-weight:850;
+}
+
+.small{
+  font-size:13px;
+  color:var(--muted);
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  margin:0 0 14px;
+}
+
+.tabs button{flex:1}
+
+.keylist{
+  display:grid;
+  gap:12px;
+}
+
+.keyitem{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+}
+
+.keyitem h3{
+  font-size:16px;
+  margin:0 0 10px;
+}
+
+.keyopt{
+  padding:7px 10px;
+  border-radius:9px;
+  margin:5px 0;
+  color:var(--muted);
+}
+
+.keyopt.right{
+  background:#effaf4;
+  color:var(--good);
+  font-weight:700;
+}
+
+.keyhead{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.keyhead input{
+  width:min(220px,55%);
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  font:inherit;
+}
+
+/* MÀN HÌNH CHỌN CHẾ ĐỘ */
+
+.setup{
+  display:grid;
+  gap:16px;
+}
+
+.setup h2{
+  margin:0 0 5px;
+  font-size:22px;
+}
+
+.mode-option{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.mode-option:hover{
+  border-color:#b9a28e;
+}
+
+.mode-option:has(input:checked){
+  border-color:var(--accent);
+  background:#faf6f1;
+}
+
+.mode-option input{
+  margin:5px 0 0;
+  accent-color:var(--accent);
+  width:18px;
+  height:18px;
+  flex:none;
+}
+
+.mode-title{
+  font-weight:750;
+}
+
+.mode-desc{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.range-wrap{
+  padding:16px;
+  background:#faf8f4;
+  border-radius:14px;
+}
+
+.range-wrap input{
+  width:100%;
+  accent-color:var(--accent);
+  margin:14px 0 5px;
+  cursor:pointer;
+}
+
+.range-value{
+  font-size:27px;
+  font-weight:850;
+  color:var(--accent);
+}
+
+.range-labels{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.setup .start-btn{
+  width:100%;
+  padding:15px;
+}
+
+@media(max-width:480px){
+  .wrap{padding:14px 12px 30px}
+  .top{align-items:flex-start}
+  .actions{
+    position:sticky;
+    bottom:8px;
+    background:var(--bg);
+    padding:8px 0;
+  }
+  .btn{padding:12px 13px}
+  .foot{font-size:12px}
+  .keyhead{align-items:flex-start;flex-direction:column}
+  .keyhead input{width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<main class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="brand">ÔN TẬP XOA BÓP BẤM HUYỆT</div>
+      <div class="small">60 câu trắc nghiệm · Theo đề cương PDF</div>
+    </div>
+    <span class="pill">Mobile friendly</span>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <button class="btn primary" id="quizTab">Làm trắc nghiệm</button>
+    <button class="btn secondary" id="keyTab">Xem 60 câu & đáp án</button>
+  </nav>
+
+  <!-- XEM ĐÁP ÁN -->
+  <section class="card" id="answerKey" hidden>
+    <div class="keyhead">
+      <div>
+        <strong>Toàn bộ câu hỏi và đáp án</strong>
+        <div class="small">Đáp án đúng được tô xanh theo tài liệu</div>
+      </div>
+      <input id="searchKey" type="search" placeholder="Tìm câu hỏi...">
+    </div>
+    <div class="keylist" id="keyList"></div>
+  </section>
+
+  <!-- CHỌN CHẾ ĐỘ -->
+  <section class="card setup" id="setup">
+
+    <div>
+      <h2>Chọn chế độ làm bài</h2>
+      <div class="small">Tùy chỉnh bài kiểm tra trước khi bắt đầu.</div>
+    </div>
+
+    <label class="mode-option">
+      <input type="radio" name="quizMode" value="ordered" checked>
+      <div>
+        <div class="mode-title">1. Theo thứ tự đề ôn</div>
+        <div class="mode-desc">
+          Làm lần lượt từ câu 1 đến câu cuối theo đúng tài liệu.
+        </div>
+      </div>
+    </label>
+
+    <label class="mode-option">
+      <input type="radio" name="quizMode" value="random">
+      <div>
+        <div class="mode-title">2. Shuffle ngẫu nhiên</div>
+        <div class="mode-desc">
+          Trộn câu hỏi ngẫu nhiên, không lặp câu trong cùng một bài.
+        </div>
+      </div>
+    </label>
+
+    <div class="range-wrap">
+      <div class="small">SỐ LƯỢNG CÂU MUỐN LÀM</div>
+
+      <div class="range-value">
+        <span id="questionAmount">20</span> câu
+      </div>
+
+      <input
+        id="questionRange"
+        type="range"
+        min="5"
+        max="60"
+        step="5"
+        value="20"
+      >
+
+      <div class="range-labels">
+        <span>5 câu</span>
+        <span>60 câu</span>
+      </div>
+    </div>
+
+    <button class="btn primary start-btn" id="startQuiz">
+      Bắt đầu làm bài →
+    </button>
+
+  </section>
+
+  <!-- KHU VỰC LÀM BÀI -->
+  <section class="card hidden" id="quiz">
+
+    <div class="meta">
+      <span id="count">Câu 1 / 20</span>
+      <span id="score">Đúng: 0</span>
+    </div>
+
+    <div class="bar">
+      <i id="progress"></i>
+    </div>
+
+    <h1 class="question" id="question"></h1>
+
+    <div class="opts" id="options"></div>
+
+    <div id="feedback" class="hidden" aria-live="polite"></div>
+
+    <div class="actions">
+      <button class="btn secondary" id="prev">← Trước</button>
+      <button class="btn primary" id="check">Kiểm tra đáp án</button>
+      <button class="btn secondary" id="next">Tiếp →</button>
+    </div>
+
+    <div class="foot">
+      <span>Chọn một đáp án rồi bấm “Kiểm tra đáp án”.</span>
+      <button class="btn secondary" id="restart">Làm lại</button>
+    </div>
+
+  </section>
+
+  <!-- KẾT QUẢ -->
+  <section class="card summary hidden" id="done">
+
+    <div class="small">HOÀN THÀNH BÀI ÔN</div>
+
+    <div class="score" id="finalscore"></div>
+
+    <p id="finaltext"></p>
+
+    <button class="btn primary" id="again">
+      Làm bài mới
+    </button>
+
+    <button class="btn secondary" id="backSetup" style="width:100%;margin-top:10px">
+      Đổi chế độ / số lượng câu
+    </button>
+
+  </section>
+
+  <p class="small" style="text-align:center;margin-top:18px">
+    Đáp án được chép theo phần tô đỏ/in đậm trong tài liệu gốc.
+    Hãy đối chiếu bản PDF nếu phát hiện khác biệt.
+  </p>
+
+</main>
+
+<!-- DỮ LIỆU CÂU HỎI -->
+<script src="questions.js"></script>
+
+<script>
+
+// ======================================
+// KHỞI TẠO
+// ======================================
+
+let idx = 0;
+let answers = {};
+let checked = {};
+
+let currentTest = [];
+let selectedMode = "ordered";
+let selectedAmount = 20;
+
+const $ = id => document.getElementById(id);
+const letters = ["A","B","C","D"];
+
+// ======================================
+// CHỌN SỐ LƯỢNG CÂU
+// ======================================
+
+$("questionRange").addEventListener("input", e => {
+  selectedAmount = Number(e.target.value);
+  $("questionAmount").textContent = selectedAmount;
+});
+
+// ======================================
+// CHỌN CHẾ ĐỘ
+// ======================================
+
+document.querySelectorAll('input[name="quizMode"]').forEach(input => {
+  input.addEventListener("change", e => {
+    selectedMode = e.target.value;
+  });
+});
+
+// ======================================
+// TRỘN CÂU HỎI NGẪU NHIÊN
+// ======================================
+
+function shuffleArray(array) {
+  const result = [...array];
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result;
+}
+
+// ======================================
+// TẠO BÀI KIỂM TRA
+// ======================================
+
+function createTest() {
+
+  let pool = [...QUESTIONS];
+
+  if (selectedMode === "random") {
+    pool = shuffleArray(pool);
+  }
+
+  currentTest = pool.slice(
+    0,
+    Math.min(selectedAmount, pool.length)
+  );
+
+  idx = 0;
+  answers = {};
+  checked = {};
+}
+
+// ======================================
+// BẮT ĐẦU
+// ======================================
+
+$("startQuiz").onclick = () => {
+
+  if (!Array.isArray(QUESTIONS) || QUESTIONS.length === 0) {
+    alert("Không tìm thấy dữ liệu câu hỏi trong questions.js");
+    return;
+  }
+
+  createTest();
+
+  $("setup").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  $("done").classList.add("hidden");
+
+  render();
+};
+
+// ======================================
+// TÍNH ĐIỂM
+// ======================================
+
+function score() {
+  return currentTest.filter(
+    q => answers[q.n] === q.a
+  ).length;
+}
+
+// ======================================
+// HIỂN THỊ CÂU HỎI
+// ======================================
+
+function render() {
+
+  const q = currentTest[idx];
+
+  $("count").textContent =
+    `Câu ${idx + 1} / ${currentTest.length}`;
+
+  $("score").textContent =
+    `Đúng: ${score()}`;
+
+  $("progress").style.width =
+    `${(idx + 1) / currentTest.length * 100}%`;
+
+  $("question").textContent = q.q;
+
+  $("options").innerHTML = "";
+
+  q.opts.forEach((v, i) => {
+
+    const lab = document.createElement("label");
+    lab.className = "opt";
+
+    if (answers[q.n] === letters[i]) {
+      lab.classList.add("selected");
+    }
+
+    if (checked[q.n]) {
+
+      if (letters[i] === q.a) {
+        lab.classList.add("correct");
+      }
+
+      else if (answers[q.n] === letters[i]) {
+        lab.classList.add("wrong");
+      }
+    }
+
+    const inp = document.createElement("input");
+
+    inp.type = "radio";
+    inp.name = "answer";
+    inp.value = letters[i];
+
+    inp.checked = answers[q.n] === letters[i];
+    inp.disabled = !!checked[q.n];
+
+    inp.addEventListener("change", () => {
+      answers[q.n] = letters[i];
+      render();
+    });
+
+    const l = document.createElement("span");
+    l.className = "letter";
+    l.textContent = letters[i] + ".";
+
+    const t = document.createElement("span");
+    t.textContent = v;
+
+    lab.append(inp, l, t);
+
+    $("options").append(lab);
+
+  });
+
+  // PHẢN HỒI ĐÚNG / SAI
+
+  const f = $("feedback");
+
+  if (checked[q.n]) {
+
+    f.className =
+      "feedback " +
+      (answers[q.n] === q.a ? "good" : "bad");
+
+    f.textContent = answers[q.n] === q.a
+      ? `Chính xác! Đáp án ${q.a}.`
+      : `Chưa đúng. Đáp án đúng theo tài liệu: ${q.a}. ${q.opts[letters.indexOf(q.a)]}`;
+
+  } else {
+
+    f.className = "hidden";
+    f.textContent = "";
+
+  }
+
+  $("prev").disabled = idx === 0;
+
+  $("next").textContent =
+    idx === currentTest.length - 1
+      ? "Xem kết quả"
+      : "Tiếp →";
+
+  $("check").disabled =
+    !answers[q.n] || !!checked[q.n];
+
+}
+
+// ======================================
+// KIỂM TRA ĐÁP ÁN
+// ======================================
+
+$("check").onclick = () => {
+
+  const q = currentTest[idx];
+
+  checked[q.n] = true;
+
+  render();
+
+};
+
+// ======================================
+// CÂU TRƯỚC
+// ======================================
+
+$("prev").onclick = () => {
+
+  if (idx > 0) {
+    idx--;
+    render();
+  }
+
+};
+
+// ======================================
+// CÂU TIẾP THEO
+// ======================================
+
+$("next").onclick = () => {
+
+  if (idx < currentTest.length - 1) {
+
+    idx++;
+    render();
+
+  } else {
+
+    finish();
+
+  }
+
+};
+
+// ======================================
+// KẾT THÚC BÀI
+// ======================================
+
+function finish() {
+
+  $("quiz").classList.add("hidden");
+  $("done").classList.remove("hidden");
+
+  const s = score();
+  const total = currentTest.length;
+
+  const answeredCount = Object.keys(checked).length;
+
+  const wrongCount = currentTest.filter(q =>
+    checked[q.n] && answers[q.n] !== q.a
+  ).length;
+
+  const unansweredCount = total - answeredCount;
+
+  $("finalscore").textContent =
+    `${s} / ${total}`;
+
+  $("finaltext").textContent =
+    `Bạn đã kiểm tra ${answeredCount}/${total} câu. ` +
+    `Số câu đúng: ${s}; số câu sai: ${wrongCount}; ` +
+    `chưa trả lời: ${unansweredCount}.`;
+
+}
+
+// ======================================
+// LÀM LẠI BÀI THEO CÙNG CẤU HÌNH
+// ======================================
+
+function restartQuiz() {
+
+  createTest();
+
+  $("done").classList.add("hidden");
+  $("setup").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+
+  render();
+
+}
+
+$("restart").onclick = restartQuiz;
+$("again").onclick = restartQuiz;
+
+// ======================================
+// ĐỔI CHẾ ĐỘ / SỐ LƯỢNG CÂU
+// ======================================
+
+$("backSetup").onclick = () => {
+
+  $("done").classList.add("hidden");
+  $("quiz").classList.add("hidden");
+  $("setup").classList.remove("hidden");
+
+};
+
+// ======================================
+// XEM TOÀN BỘ ĐÁP ÁN
+// ======================================
+
+function renderKey(filter = "") {
+
+  const list = $("keyList");
+
+  list.innerHTML = "";
+
+  const term = filter.trim().toLocaleLowerCase("vi");
+
+  QUESTIONS
+    .filter(q =>
+      !term ||
+      (`Câu ${q.n} ${q.q}`)
+        .toLocaleLowerCase("vi")
+        .includes(term)
+    )
+    .forEach(q => {
+
+      const card = document.createElement("article");
+      card.className = "keyitem";
+
+      const h = document.createElement("h3");
+
+      h.textContent = `Câu ${q.n}. ${q.q}`;
+
+      card.append(h);
+
+      q.opts.forEach((v, i) => {
+
+        const row = document.createElement("div");
+
+        row.className =
+          "keyopt" +
+          (letters[i] === q.a ? " right" : "");
+
+        row.textContent =
+          `${letters[i]}. ${v}` +
+          (letters[i] === q.a
+            ? "  ✓ ĐÁP ÁN ĐÚNG"
+            : "");
+
+        card.append(row);
+
+      });
+
+      list.append(card);
+
+    });
+
+}
+
+// ======================================
+// CHUYỂN TAB
+// ======================================
+
+function showMode(mode) {
+
+  const key = mode === "key";
+
+  $("answerKey").hidden = !key;
+
+  $("setup").classList.toggle("hidden", key);
+  $("quiz").classList.add("hidden");
+  $("done").classList.add("hidden");
+
+  $("keyTab").className =
+    "btn " + (key ? "primary" : "secondary");
+
+  $("quizTab").className =
+    "btn " + (!key ? "primary" : "secondary");
+
+  if (key) {
+    renderKey($("searchKey").value);
+  }
+
+}
+
+$("quizTab").onclick = () => showMode("quiz");
+$("keyTab").onclick = () => showMode("key");
+
+$("searchKey").addEventListener("input", e => {
+  renderKey(e.target.value);
+});
+
+// ======================================
+// MẶC ĐỊNH MỞ TAB LÀM TRẮC NGHIỆM
+// ======================================
+
+showMode("quiz");
+
+</script>
+
+</body>
+</html>
